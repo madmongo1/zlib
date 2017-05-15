@@ -2,7 +2,31 @@ cmake_minimum_required(VERSION 3.0)
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
 #todo - deduce this from NODEJS_ROOT
-project(ZLIB VERSION "1.2.8" LANGUAGES C)
+
+set(ZLIB_INCLUDE_DIR ${NODEJS_ROOT})
+if(ZLIB_INCLUDE_DIR AND EXISTS "${ZLIB_INCLUDE_DIR}/zlib.h")
+    file(STRINGS "${ZLIB_INCLUDE_DIR}/zlib.h" ZLIB_H REGEX "^#define ZLIB_VERSION \"[^\"]*\"$")
+
+    string(REGEX REPLACE "^.*ZLIB_VERSION \"([0-9]+).*$" "\\1" ZLIB_VERSION_MAJOR "${ZLIB_H}")
+    string(REGEX REPLACE "^.*ZLIB_VERSION \"[0-9]+\\.([0-9]+).*$" "\\1" ZLIB_VERSION_MINOR  "${ZLIB_H}")
+    string(REGEX REPLACE "^.*ZLIB_VERSION \"[0-9]+\\.[0-9]+\\.([0-9]+).*$" "\\1" ZLIB_VERSION_PATCH "${ZLIB_H}")
+    set(ZLIB_VERSION_STRING "${ZLIB_VERSION_MAJOR}.${ZLIB_VERSION_MINOR}.${ZLIB_VERSION_PATCH}")
+
+    # only append a TWEAK version if it exists:
+    set(ZLIB_VERSION_TWEAK "")
+    if( "${ZLIB_H}" MATCHES "ZLIB_VERSION \"[0-9]+\\.[0-9]+\\.[0-9]+\\.([0-9]+)")
+        set(ZLIB_VERSION_TWEAK "${CMAKE_MATCH_1}")
+        string(APPEND ZLIB_VERSION_STRING ".${ZLIB_VERSION_TWEAK}")
+    endif()
+
+    set(ZLIB_MAJOR_VERSION "${ZLIB_VERSION_MAJOR}")
+    set(ZLIB_MINOR_VERSION "${ZLIB_VERSION_MINOR}")
+    set(ZLIB_PATCH_VERSION "${ZLIB_VERSION_PATCH}")
+else()
+    message(FATAL_ERROR "invalid NODEJS_ROOT : ${NODEJS_ROOT}")
+endif()
+
+project(ZLIB VERSION "${ZLIB_VERSION_STRING}" LANGUAGES C)
 
 set(VERSION "${PROJECT_VERSION}")
 
