@@ -16,3 +16,8 @@ if(NOT TARGET ZLIB::ZLIB)
     add_library(ZLIB::ZLIB UNKNOWN IMPORTED)
     set_target_properties(ZLIB::ZLIB PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${ZLIB_INCLUDE_DIRS}")
 endif()
+
+if(NOT TARGET ZLIB::zlib)
+    add_library(ZLIB::zlib UNKNOWN IMPORTED)
+    set_target_properties(ZLIB::zlib PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${ZLIB_INCLUDE_DIRS}")
+endif()
