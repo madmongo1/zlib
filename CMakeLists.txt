@@ -3,7 +3,7 @@ set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
 #todo - deduce this from NODEJS_ROOT
 
-set(ZLIB_INCLUDE_DIR ${NODEJS_ROOT})
+set(ZLIB_INCLUDE_DIR ${NODEJS_ROOT}/include)
 if(ZLIB_INCLUDE_DIR AND EXISTS "${ZLIB_INCLUDE_DIR}/zlib.h")
     file(STRINGS "${ZLIB_INCLUDE_DIR}/zlib.h" ZLIB_H REGEX "^#define ZLIB_VERSION \"[^\"]*\"$")
 
